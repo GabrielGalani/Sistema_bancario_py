@@ -117,6 +117,7 @@ def criar_conta_corrente():
 def main():
     saldo = 0  # Saldo inicial da conta
     extrato = ""  # Extrato de movimentações
+    numero_saques = 0 # Inicializa fora do loop
 
     # Loop principal do sistema bancário
     while True:
@@ -135,7 +136,6 @@ def main():
             # Solicita o valor do saque ao usuário
             valor = float(input("Informe o valor do saque: R$ "))
             limite = 500  # Limite de saque diário
-            numero_saques = 0  # Número de saques realizados
             limite_saque= 3  # Limite de saques diários permitidos
             
             # Executa o saque
