@@ -100,8 +100,42 @@ def exibir_extrato(saldo, /, *, extrato):
 # Requisitos: O programa deve armazenar os usuários em uma lista, um usuário é composto por: nome, data de nascimento, cpf e endereço. O endereço é uma string
 # com formato: logradouro, nro - bairro - cidade/UF. Deve ser armazenado somente os númerosdo CPF. Não podemos cadastrar 2 usuários  com o mesmo cpf (Unique)
 #============================================================================
+# Lista para armazenar os usuários
+usuarios = []
+
+# Função para criar um novo usuário
 def criar_usuario():
-    pass
+    # Coleta de informações do usuário
+    nome = input("Digite o nome: ")
+    data_nascimento = input("Digite a data de nascimento (dd/mm/aaaa): ")
+    
+    # Validação do CPF (apenas números)
+    while True:
+        cpf = input("Digite o CPF (apenas números): ").strip()
+        if len(cpf) == 11 and cpf.isdigit():
+            break
+        print("CPF inválido. O CPF deve conter 11 números.")
+    
+    # Verifica se o CPF já foi cadastrado
+    for usuario in usuarios:
+        if usuario['cpf'] == cpf:
+            print("Erro: Usuário com este CPF já está cadastrado.")
+            return
+    
+    # Coleta do endereço
+    endereco = input("Digite o endereço no formato 'logradouro, nro - bairro - cidade/UF': ")
+    
+    # Cria um dicionário com os dados do usuário
+    usuario = {
+        'nome': nome,
+        'data_nascimento': data_nascimento,
+        'cpf': cpf,
+        'endereco': endereco
+    }
+    
+    # Adiciona o usuário à lista de usuários
+    usuarios.append(usuario)
+    print(f"Usuário {nome} criado com sucesso!")
 
 
 #============================================================================
@@ -109,8 +143,50 @@ def criar_usuario():
 # Requisitos: O programa deve armazenar contas em uma lista, uma conta é composta por: agência, número da conta e usuário. O número da conta é sequencial, inicial
 # em 1. O número da agência é fixo: 0001. O usuário pode ter mais de uma conta, mas uma conta pertence somente à um usuario (um para muitos a relação)
 #============================================================================
+# Lista para armazenar as contas
+contas = []
+# Contador sequencial para os números das contas
+numero_conta = 1
+
+# Função para criar uma nova conta corrente
 def criar_conta_corrente():
-    pass
+    global numero_conta
+    
+    # Exibe os usuários cadastrados
+    if not usuarios:
+        print("Erro: Nenhum usuário encontrado. Crie um usuário primeiro.")
+        return
+    
+    print("\nLista de usuários:")
+    for i, usuario in enumerate(usuarios):
+        print(f"{i + 1}. {usuario['nome']} (CPF: {usuario['cpf']})")
+    
+    # Seleciona o usuário para associar à conta
+    while True:
+        try:
+            opcao = int(input("\nSelecione o número do usuário para associar à conta: "))
+            if 1 <= opcao <= len(usuarios):
+                usuario_selecionado = usuarios[opcao - 1]
+                break
+            else:
+                print("Erro: Número inválido. Tente novamente.")
+        except ValueError:
+            print("Erro: Digite um número válido.")
+    
+    # Define os dados da conta corrente
+    conta = {
+        'agencia': '0001',
+        'numero_conta': numero_conta,
+        'usuario': usuario_selecionado
+    }
+    
+    # Incrementa o número sequencial da conta
+    numero_conta += 1
+    
+    # Adiciona a conta à lista de contas
+    contas.append(conta)
+    print(f"Conta criada com sucesso! Agência: {conta['agencia']}, Conta: {conta['numero_conta']}, Titular: {conta['usuario']['nome']}\n")
+
 
 
 # Função principal que gerencia a interação do usuário com o sistema bancário
@@ -153,6 +229,10 @@ def main():
                 saldo, 
                 extrato = extrato
             )
+        elif opcao == "u": 
+            criar_usuario()
+        elif opcao == "c":
+            criar_conta_corrente()
         elif opcao == "q":
             # Sai do sistema
             print("Saindo... Obrigado por utilizar o sistema.")
